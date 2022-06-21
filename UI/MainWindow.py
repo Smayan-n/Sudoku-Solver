@@ -55,6 +55,27 @@ class MainWindow(QMainWindow):
             
         except:
             pass
+    
+    #saves board in a file
+    def saveBoard(self, board):
+        try:
+            file_dialog = QFileDialog()
+            savePath = file_dialog.getSaveFileName(self, "Save Maze", "", "Text files (*.txt)")[0]
+
+            #convert array into string of numbers
+            string = ""
+            for row in board:
+                for val in row:
+                    string += str(val)
+                
+                string += "\n"
+
+            print(string)
+            with open(savePath, "w") as f:
+                f.write(string)
+            
+        except:
+            pass
 
     #warning message function
     def showWarning(self, warning):

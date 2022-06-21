@@ -30,6 +30,7 @@ class SudokuSolverUI(QWidget):
         else:
             self.board = [[0 for i in range(ROWS)] for j in range(COLS)]
 
+
         self.initUI()        
     
     def initUI(self):
@@ -52,6 +53,13 @@ class SudokuSolverUI(QWidget):
         mainMenuButton.setStyleSheet("background-color: ORANGE; color: white")
         mainMenuButton.setFont(FONT2)
         mainMenuButton.clicked.connect(self.mainWin.startStartUpUI)
+
+        #save menu button
+        saveButton = QPushButton("Save", self)
+        saveButton.setGeometry(CELL_SIZE*6 + CELL_SIZE//2, (self.screenHeight - RELIEF)+10, CELL_SIZE*2, RELIEF-20)
+        saveButton.setStyleSheet("background-color: AQUA; color: black")
+        saveButton.setFont(FONT2)
+        saveButton.clicked.connect(lambda: self.mainWin.saveBoard(self.parse()))
 
         self.createGrid()
 
@@ -105,22 +113,26 @@ class SudokuSolverUI(QWidget):
         self.board = self.parse()
         #resetting the board
         self.createGrid()
-
-        #solver object
-        #creating a copy of the initial board for the function to use
-        solver = SudokuSolver(copy.deepcopy(self.board))
-        #solving the board
-        isSolution = solver.solve()
-        #getting the solution board
-        self.solutionBoard = solver.getSolution()
-        self.illustratedBoard = solver.getIllustratedBoard()
         
-        #only if there is a solution and the whole board is valid and not solved
-        if isSolution and not solver.solved(self.board):        
+        #solver object
+        #creating a copy of the initial board for the class to use
+        solver = SudokuSolver(copy.deepcopy(self.board))
+        #solving the board if it is valid
+        if solver.boardIsValid():
+            isSolution = solver.solve()
+            #getting the solution board
+            self.solutionBoard = solver.getSolution()
+            self.illustratedBoard = solver.getIllustratedBoard()
+        else:
+            self.mainWin.showWarning("Invalid board")
+            return
+
+        
+        #only if there is a solution and the whole board is not solved
+        if isSolution and not SudokuSolver.solved(self.board):        
             #illustrating the solution by showing the method of solving (backtracking)
             self.index = 0
-            self.timer.start(50)#delay between each step
-        
+            self.timer.start(45)#delay between each step
         else:
             self.mainWin.showWarning("No Solution!" if not isSolution else "Already Solved!")
 
