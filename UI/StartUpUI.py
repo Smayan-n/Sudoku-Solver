@@ -36,9 +36,12 @@ class StartUpUI(QWidget):
         self.loadBtn = QPushButton("Load sudoku", self)
         self.loadBtn.setFont(FONT2)
         self.loadBtn.setFixedHeight(150)
+        self.loadBtn.clicked.connect(self.mainWin.loadBoard)
+
         self.createBtn = QPushButton("Create new sudoku", self)
         self.createBtn.setFont(FONT2)
         self.createBtn.setFixedHeight(150)
+        self.createBtn.clicked.connect(self.mainWin.startSudokuEditUI)
 
         self.layout.addWidget(info_lbl)
         self.layout.addWidget(maze_lbl)

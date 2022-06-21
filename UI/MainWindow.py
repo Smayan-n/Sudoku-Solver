@@ -8,6 +8,8 @@ import sys
 
 from StartUpUI import StartUpUI
 from SudokuSolverUI import SudokuSolverUI
+from SudokuEditUI import SudokuEditUI
+from constants import *
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -21,13 +23,16 @@ class MainWindow(QMainWindow):
     def startStartUpUI(self):
         self.startWin = StartUpUI(self)
         self.setCentralWidget(self.startWin)
-        self.startWin.loadBtn.clicked.connect(lambda: self.loadBoard())
-        self.startWin.createBtn.clicked.connect(lambda: self.startSudokuSolverUI())
         self.show()
     
     def startSudokuSolverUI(self, board=None):
         self.solveWin = SudokuSolverUI(self, board)
         self.setCentralWidget(self.solveWin)
+        self.show()
+    
+    def startSudokuEditUI(self, board=None):
+        self.editWin = SudokuEditUI(self, board)
+        self.setCentralWidget(self.editWin)
         self.show()
     
 
@@ -70,7 +75,6 @@ class MainWindow(QMainWindow):
                 
                 string += "\n"
 
-            print(string)
             with open(savePath, "w") as f:
                 f.write(string)
             
@@ -91,9 +95,73 @@ class MainWindow(QMainWindow):
         # declaring buttons on Message Box
         msg.setStandardButtons(QMessageBox.Ok)
         
-        # start the app
+        #start the message box
         msg.exec_()
 
+    #turns the board values into a 2D array of numbers representing the sudoku board
+    def parse(self, cells):
+        board = []
+        for x in cells:
+            row = []
+            for cell in x:
+                if cell.text() != "":
+                    row.append(int(cell.text()))
+                else:
+                    #0 represents an empty cell
+                    row.append(0)
+            
+            board.append(row)
+        
+        return board
+
+    #creates sudoku board
+    def createGrid(self, ui, cells, board):
+        x = 0
+        y = 0
+
+        for row in range(ROWS):
+            #creating the seperating lines on the grid (Horizontal)
+            if row % 3 == 0 and row != 8 and row != 0:
+                line = QLabel(ui)#lines are made using labels
+                line.setGeometry(x, y, COLS * CELL_SIZE, 10)
+                line.setStyleSheet("border: 10px solid black")
+
+            for col in range(COLS):
+                cell = cells[row][col]
+                #setting int validator - allows only integers from 0-9
+                cell.setValidator(QIntValidator(0, 9))
+
+                #disable editing only if the ui type is of solverUI
+                if str(type(ui)) == "<class 'SudokuSolverUI.SudokuSolverUI'>":
+                    cell.setReadOnly(True)
+                else:
+                    cell.setReadOnly(False)
+                
+                #filling in numbers from the board
+                cell.setText(str(board[row][col]))
+                if cell.text() == "0":
+                    cell.setText("")
+
+                
+                #alligns text in label to the center
+                cell.setAlignment(QtCore.Qt.AlignCenter)
+                cell.setFont(FONT1)
+
+                #determines placement and size of label
+                cell.setGeometry(x, y, CELL_SIZE, CELL_SIZE)
+                x += CELL_SIZE
+
+                cell.setStyleSheet("border: 1px solid black; background-color: white")
+
+                #creating the seperating lines on the grid (Vertical)
+                #this creates 2 seperate lines for each row
+                if col % 3 == 2 and col != 8:
+                    line = QLabel(ui)
+                    line.setGeometry(x, y, 10, CELL_SIZE)
+                    line.setStyleSheet("border: 10px solid black")
+
+            x = 0
+            y += CELL_SIZE
 
 def main():
     app = QApplication(sys.argv)
