@@ -4,8 +4,14 @@ class SudokuSolver:
     def __init__(self, board):
         self.board = board
 
+        #for illustration
+        self.illustratedBoard = []
+
     def getSolution(self):
         return self.board
+
+    def getIllustratedBoard(self):
+        return self.illustratedBoard
 
     #main solve function (recursive)
     def solve(self):
@@ -24,6 +30,7 @@ class SudokuSolver:
             if self.isValid(i, row, col):
                 #if the value is valid, it is set to the empty cell
                 self.board[row][col] = i
+                self.illustratedBoard.append((i, row, col))
 
                 #backtracking:
                 #if a solution is found, end the program
@@ -64,15 +71,6 @@ class SudokuSolver:
         #else its valid so return true
         return True
 
-    #check if whole board is valid
-    def isInitialValid(self):
-        for i in range(9):
-            for j in range(9):
-                if self.board[i][j] != 0:
-                    if not self.isValid(self.board[i][j], i, j):
-                        return False
-        return True
-
     #returns (row, col) of empty cell on the board
     def getEmpty(self):
 
@@ -84,45 +82,23 @@ class SudokuSolver:
         #return False if there are no empty cells left
         return False
 
-    #prints board in a readable format
-    def printBoard(self):
-
+    #check if whole board is valid
+    def boardIsValid(self):
         for i in range(9):
-            if i % 3 == 0 and i != 0:
-                print("---------------------")
-
             for j in range(9):
-                print(self.board[i][j], end = " ")
-                
-                #printing vertical lines every 3 columns
-                if j % 3 == 2 and j != 8:
-                    print("|", end = " ")
+                if self.board[i][j] != 0:
+                    if not self.isValid(self.board[i][j], i, j):
+                        return False
+        return True
+    
+    #returns true if the board is solved
+    @staticmethod
+    def solved(board):
+        for i in range(9):
+            for j in range(9):
+                if board[i][j] == 0:
+                    return False
 
-            print()
+        return True
 
-def main():
 
-    #0 == empty cell
-    board = [
-            [7,8,0,4,0,0,1,2,0],
-            [6,0,0,0,7,5,0,0,9],
-            [0,0,0,6,0,1,0,7,8],
-            [0,0,7,0,4,0,2,6,0],
-            [0,0,1,0,5,0,9,3,0],
-            [9,0,4,0,6,0,0,0,5],
-            [0,7,0,3,0,0,0,1,2],
-            [1,2,0,0,0,7,4,0,0],
-            [0,4,9,2,0,6,0,0,7]
-            ]
-
-    sudoku_solver = SudokuSolver(board)
-    print(sudoku_solver.isInitialValid())
-
-    sudoku_solver.printBoard()
-    #attempts to solve the board and returns true if solution is found, false otherwise
-    solution = sudoku_solver.solve()
-    print(solution)
-    sudoku_solver.printBoard()
-
-if __name__ == '__main__':
-    main()

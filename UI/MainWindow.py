@@ -44,11 +44,9 @@ class MainWindow(QMainWindow):
             board = []
             #splits string into a list of strings representing each row
             lines = contents.splitlines()
-            print(lines)
             for line in lines:
                 #splits the line into a list of strings
                 board.append(list(line))
-                print(board)
 
             #converting the strings to ints in array
             board = [[int(x) for x in row] for row in board]
@@ -57,6 +55,23 @@ class MainWindow(QMainWindow):
             
         except:
             pass
+
+    #warning message function
+    def showWarning(self, warning):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Warning)
+  
+        # setting Message box window title
+        msg.setWindowTitle("Warning")
+        
+        # setting message for Message Box
+        msg.setText(warning)
+        
+        # declaring buttons on Message Box
+        msg.setStandardButtons(QMessageBox.Ok)
+        
+        # start the app
+        msg.exec_()
 
 
 def main():
