@@ -1,9 +1,11 @@
 from PyQt5.QtGui import QFont
 
+#file stores all constants used in the project
+
 ROWS = 9
 COLS = 9
-CELL_SIZE = 150
-RELIEF = 150
+CELL_SIZE = 100
+RELIEF = 100
 
 FONT1 = QFont("Arial", 30)
 FONT2 = QFont("Arial", 16)

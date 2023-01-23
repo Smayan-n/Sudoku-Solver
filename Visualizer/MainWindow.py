@@ -65,7 +65,7 @@ class MainWindow(QMainWindow):
     def saveBoard(self, board):
         try:
             file_dialog = QFileDialog()
-            savePath = file_dialog.getSaveFileName(self, "Save Maze", "", "Text files (*.txt)")[0]
+            savePath = file_dialog.getSaveFileName(self, "Save Sudoku", "", "Text files (*.txt)")[0]
 
             #convert array into string of numbers
             string = ""
